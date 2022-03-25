@@ -1,6 +1,7 @@
 package com.sasiCodes.springdatajpa;
 
 import com.github.javafaker.Faker;
+import com.sasiCodes.springdatajpa.model.Book;
 import com.sasiCodes.springdatajpa.model.Student;
 import com.sasiCodes.springdatajpa.model.StudentIdCard;
 import com.sasiCodes.springdatajpa.repository.StudentIdCardRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootApplication
@@ -70,26 +72,48 @@ public class SpringDataJpaApplication {
 			//studentRepository.findAll(Sort.by(Sort.Direction.ASC,"firstName"))
 			//sorting(studentRepository);
             //pagination(studentRepository);
-//            Faker faker = new Faker();
-//            String firstName = faker.name().firstName();
-//            String lastName = faker.name().lastName();
-//            String email = String.format("%s.%s@gmail.com", firstName, lastName);
-//
-//            Student student = Student.builder()
-//                    .firstName(firstName)
-//                    .lastName(lastName)
-//                    .email(email)
-//                    .age(faker.number().numberBetween(17,55))
-//                    .build();
-//
-//            StudentIdCard studentIdCard = StudentIdCard.builder().cardNumber("123456789")
-//                    .student(student).build();
-//
-//            studentIdCardRepository.save(studentIdCard);
+            Faker faker = new Faker();
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String email = String.format("%s.%s@gmail.com", firstName, lastName);
 
-			studentIdCardRepository.findById(1L).ifPresent(
-					System.out::println
-			);
+            Student student = Student.builder()
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .email(email)
+                    .age(faker.number().numberBetween(17,55))
+                    .build();
+
+			Book book1 = Book.builder()
+					.bookName("Clean code")
+					.createAt(LocalDateTime.now().minusDays(4))
+					.build();
+			Book book2 = Book.builder()
+					.bookName("Spring Data JPA")
+					.createAt(LocalDateTime.now().minusYears(1))
+					.build();
+
+
+			student.addBook(book1);
+			student.addBook(book2);
+
+
+
+			//student.setBooks(List.of(book1, book2));
+
+            StudentIdCard studentIdCard = StudentIdCard.builder()
+					.cardNumber("123456789")
+					.student(student).build();
+
+			student.setStudentIdCard(studentIdCard);
+
+           // studentIdCardRepository.save(studentIdCard);
+
+			studentRepository.save(student);
+
+//			studentIdCardRepository.findById(1L).ifPresent(
+//					System.out::println
+//			);
 
         };
 	}

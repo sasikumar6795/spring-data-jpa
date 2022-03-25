@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -38,10 +40,45 @@ public class Student {
     @Column(name = "age", nullable = false)
     private Integer age;
 
+    //to make it bidirectional
     @OneToOne(mappedBy = "student",
-            orphanRemoval = true
+            orphanRemoval = true,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE}
     )
     private StudentIdCard studentIdCard;
+
+    //to make it bidirectional
+
+
+    @OneToMany(mappedBy="student",
+            orphanRemoval=true,
+            cascade = {CascadeType.ALL},
+            fetch = FetchType.EAGER
+    )
+    private List<Book> books = new ArrayList<>();
+
+    //to be in sync for bi directional
+    public void addBook(Book book) {
+        if(!this.books.contains(book)){
+            this.books.add(book);
+            book.setStudent(this);
+        }
+    }
+
+    public void removeBook(Book book) {
+        if(this.books.contains(book)){
+            this.books.remove(book);
+            book.setStudent(null);
+        }
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
 
     public Long getId() {
         return id;
@@ -100,5 +137,15 @@ public class Student {
                 ", age=" + age +
                 ", studentIdCard=" + studentIdCard +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }
