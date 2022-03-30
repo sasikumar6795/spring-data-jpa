@@ -2,6 +2,7 @@ package com.sasiCodes.springdatajpa;
 
 import com.github.javafaker.Faker;
 import com.sasiCodes.springdatajpa.model.Book;
+import com.sasiCodes.springdatajpa.model.Course;
 import com.sasiCodes.springdatajpa.model.Student;
 import com.sasiCodes.springdatajpa.model.StudentIdCard;
 import com.sasiCodes.springdatajpa.repository.StudentIdCardRepository;
@@ -103,6 +104,9 @@ public class SpringDataJpaApplication {
 
 			student.setStudentIdCard(studentIdCard);
            // studentIdCardRepository.save(studentIdCard);
+
+			student.enrolToCourse(new Course("springboot", "IT"));
+			student.enrolToCourse(new Course("DataBaseDesign", "IT"));
 
 			studentRepository.save(student);
 
