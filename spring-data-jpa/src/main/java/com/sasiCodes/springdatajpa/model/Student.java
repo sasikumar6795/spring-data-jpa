@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity(name = "Student")
 @Table(name = "student", uniqueConstraints = {
         @UniqueConstraint(name ="student_email_unique",columnNames = "email")
@@ -52,22 +50,28 @@ public class Student {
 
     @OneToMany(mappedBy="student",
             orphanRemoval=true,
-            cascade = {CascadeType.ALL},
-            fetch = FetchType.EAGER
+            cascade = CascadeType.ALL
     )
     private List<Book> books = new ArrayList<>();
 
+    public Student(String firstName, String lastName, String email, Integer age) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.age = age;
+    }
+
     //to be in sync for bi directional
     public void addBook(Book book) {
-        if(!this.books.contains(book)){
-            this.books.add(book);
+        if(!books.contains(book)){
+            books.add(book);
             book.setStudent(this);
         }
     }
 
     public void removeBook(Book book) {
-        if(this.books.contains(book)){
-            this.books.remove(book);
+        if(books.contains(book)){
+            books.remove(book);
             book.setStudent(null);
         }
     }

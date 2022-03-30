@@ -15,7 +15,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class SpringDataJpaApplication {
@@ -77,36 +80,28 @@ public class SpringDataJpaApplication {
             String lastName = faker.name().lastName();
             String email = String.format("%s.%s@gmail.com", firstName, lastName);
 
-            Student student = Student.builder()
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .email(email)
-                    .age(faker.number().numberBetween(17,55))
-                    .build();
+			Student student = new Student(
+					firstName,
+					lastName,
+					email,
+					faker.number().numberBetween(17, 55));
 
-			Book book1 = Book.builder()
-					.bookName("Clean code")
-					.createAt(LocalDateTime.now().minusDays(4))
-					.build();
-			Book book2 = Book.builder()
-					.bookName("Spring Data JPA")
-					.createAt(LocalDateTime.now().minusYears(1))
-					.build();
+			student.addBook(
+					new Book("Clean Code", LocalDateTime.now().minusDays(4)));
 
 
-			student.addBook(book1);
-			student.addBook(book2);
+			student.addBook(
+					new Book("Think and Grow Rich", LocalDateTime.now()));
 
 
+			student.addBook(
+					new Book("Spring Data JPA", LocalDateTime.now().minusYears(1)));
 
-			//student.setBooks(List.of(book1, book2));
-
-            StudentIdCard studentIdCard = StudentIdCard.builder()
-					.cardNumber("123456789")
-					.student(student).build();
+			StudentIdCard studentIdCard = new StudentIdCard(
+					"123456789",
+					student);
 
 			student.setStudentIdCard(studentIdCard);
-
            // studentIdCardRepository.save(studentIdCard);
 
 			studentRepository.save(student);
@@ -115,7 +110,16 @@ public class SpringDataJpaApplication {
 //					System.out::println
 //			);
 
-        };
+			List<Student> listOfStudents = studentRepository.findAll();
+
+			Optional.ofNullable(studentIdCardRepository.findById(1L)).orElseThrow(() -> new IllegalStateException("no student id card found"));
+
+			Optional.ofNullable(listOfStudents.stream()
+					.filter(studentAge -> studentAge.getAge() >18)
+					.sorted(Comparator.comparing(Student::getFirstName))
+					.collect(Collectors.toList()));
+
+		};
 	}
 
     private void pagination(StudentRepository studentRepository) {
@@ -138,12 +142,11 @@ public class SpringDataJpaApplication {
 			String lastName = faker.name().lastName();
 			String email = String.format("%s.%s@gmail.com", firstName, lastName);
 
-			Student student = Student.builder()
-					.firstName(firstName)
-					.lastName(lastName)
-					.email(email)
-					.age(faker.number().numberBetween(17,55))
-					.build();
+			Student student = new Student(
+					firstName,
+					lastName,
+					email,
+					faker.number().numberBetween(17, 55));
 			studentRepository.save(student);
 		}
 	}

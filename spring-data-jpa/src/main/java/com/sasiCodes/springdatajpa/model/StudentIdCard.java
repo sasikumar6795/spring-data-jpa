@@ -39,6 +39,12 @@ public class StudentIdCard {
     )
     private Student student;
 
+    public StudentIdCard(String cardNumber, Student student) {
+        this.cardNumber = cardNumber;
+        this.student=student;
+
+    }
+
     @Override
     public String toString() {
         return "StudentIdCard{" +

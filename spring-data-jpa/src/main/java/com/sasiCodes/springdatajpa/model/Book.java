@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,7 +31,7 @@ public class Book {
     @Column(name="created_at", nullable = false)
     private LocalDateTime createAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id",
             referencedColumnName = "id",
             nullable = false,
@@ -39,6 +40,11 @@ public class Book {
             )
     )
     private Student student;
+
+    public Book(String bookName, LocalDateTime createAt) {
+        this.bookName = bookName;
+        this.createAt = createAt;
+    }
 
     public Student getStudent() {
         return student;
@@ -85,11 +91,19 @@ public class Book {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(bookName, createAt, id);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if(this==obj)
+        {
+            return true;
+        }
+        if(!(obj instanceof Book))
+        {
+            return false;
+        }
+        return id!=null&&id.equals(((Book) obj).getId());
     }
 }
