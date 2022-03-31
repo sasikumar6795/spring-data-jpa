@@ -1,10 +1,7 @@
 package com.sasiCodes.springdatajpa;
 
 import com.github.javafaker.Faker;
-import com.sasiCodes.springdatajpa.model.Book;
-import com.sasiCodes.springdatajpa.model.Course;
-import com.sasiCodes.springdatajpa.model.Student;
-import com.sasiCodes.springdatajpa.model.StudentIdCard;
+import com.sasiCodes.springdatajpa.model.*;
 import com.sasiCodes.springdatajpa.repository.StudentIdCardRepository;
 import com.sasiCodes.springdatajpa.repository.StudentRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -105,8 +102,14 @@ public class SpringDataJpaApplication {
 			student.setStudentIdCard(studentIdCard);
            // studentIdCardRepository.save(studentIdCard);
 
-			student.enrolToCourse(new Course("springboot", "IT"));
-			student.enrolToCourse(new Course("DataBaseDesign", "IT"));
+//			student.enrolToCourse(new Course("springboot", "IT"));
+//			student.enrolToCourse(new Course("DataBaseDesign", "IT"));
+
+			student.addEnrollment(new Enrollment(new EnrollmentId(1L,1L),
+					student,new Course("springboot", "IT"),LocalDateTime.now()));
+
+			student.addEnrollment(new Enrollment(new EnrollmentId(1L,2L),
+					student,new Course("Java", "IT"),LocalDateTime.now().minusYears(1)));
 
 			studentRepository.save(student);
 

@@ -1,6 +1,7 @@
 package com.sasiCodes.springdatajpa.model;
 
 
+import com.sasiCodes.springdatajpa.Enrollment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,38 +56,66 @@ public class Student {
     private List<Book> books = new ArrayList<>();
 
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinTable(name = "enrollment",
-            joinColumns = @JoinColumn(name = "student_id",
-                    foreignKey = @ForeignKey(name = "enrollment_student_id_fk")
-            ),
-            inverseJoinColumns = @JoinColumn(name = "course_id",
-                    foreignKey = @ForeignKey(name="enrollment_course_id_fk")
-            )
+    //@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+//    @JoinTable(name = "enrollment",
+//            joinColumns = @JoinColumn(name = "student_id",
+//                    foreignKey = @ForeignKey(name = "enrollment_student_id_fk")
+//            ),
+//            inverseJoinColumns = @JoinColumn(name = "course_id",
+//                    foreignKey = @ForeignKey(name="enrollment_course_id_fk")
+//            )
+//    )
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            mappedBy="student"
     )
-    private List<Course> courses= new ArrayList<>();
+    private List<Enrollment> enrollments = new ArrayList<>();
 
-    public List<Course> getCourses() {
-        return courses;
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
     }
 
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
     }
 
-    public void enrolToCourse(Course course) {
-        if(!(this.courses.contains(course))){
-            courses.add(course);
-            course.getStudents().add(this);
+    public void addEnrollment(Enrollment enrollment) {
+        if(!(this.enrollments.contains(enrollment)))
+        {
+            this.enrollments.add(enrollment);
         }
     }
 
-    public void unEnrollCourse(Course course) {
-        if(this.courses.contains(course)){
-            courses.remove(course);
-            course.getStudents().remove(this);
+    public void removeEnrollment(Enrollment enrollment) {
+        if(this.enrollments.contains(enrollment))
+        {
+            this.enrollments.remove(enrollment);
         }
     }
+
+    //private List<Course> courses= new ArrayList<>();
+
+//    public List<Course> getCourses() {
+//        return courses;
+//    }
+//
+//    public void setCourses(List<Course> courses) {
+//        this.courses = courses;
+//    }
+//
+//    public void enrolToCourse(Course course) {
+//        if(!(this.courses.contains(course))){
+//            courses.add(course);
+//            course.getStudents().add(this);
+//        }
+//    }
+//
+//    public void unEnrollCourse(Course course) {
+//        if(this.courses.contains(course)){
+//            courses.remove(course);
+//            course.getStudents().remove(this);
+//        }
+//    }
 
     public Student(String firstName, String lastName, String email, Integer age) {
         this.firstName = firstName;

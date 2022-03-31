@@ -1,5 +1,6 @@
 package com.sasiCodes.springdatajpa.model;
 
+import com.sasiCodes.springdatajpa.Enrollment;
 import lombok.Builder;
 
 import javax.persistence.*;
@@ -28,17 +29,45 @@ public class Course {
     @Column(name="department", nullable = false)
     private String department;
 
-    @ManyToMany(mappedBy="courses")
-    private List<Student> students = new ArrayList<>();
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            mappedBy="course"
+    )
+    private List<Enrollment> enrollments = new ArrayList<>();
 
-
-    public List<Student> getStudents() {
-        return students;
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
     }
+
+
+    public void addEnrollment(Enrollment enrollment) {
+        if(!(this.enrollments.contains(enrollment)))
+        {
+            this.enrollments.add(enrollment);
+        }
+    }
+
+    public void removeEnrollment(Enrollment enrollment) {
+        if(this.enrollments.contains(enrollment))
+        {
+            this.enrollments.remove(enrollment);
+        }
+    }
+
+    //    @ManyToMany(mappedBy="courses")
+//    private List<Student> students = new ArrayList<>();
+
+
+//    public List<Student> getStudents() {
+//        return students;
+//    }
+//
+//    public void setStudents(List<Student> students) {
+//        this.students = students;
+//    }
 
     public Course(){
     }

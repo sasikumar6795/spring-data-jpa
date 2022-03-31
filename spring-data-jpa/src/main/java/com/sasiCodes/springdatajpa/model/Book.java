@@ -31,7 +31,7 @@ public class Book {
     @Column(name="created_at", nullable = false)
     private LocalDateTime createAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id",
             referencedColumnName = "id",
             nullable = false,
